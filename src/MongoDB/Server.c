@@ -24,6 +24,7 @@
 #include "phongo_compat.h"
 #include "php_phongo.h"
 #include "php_bson.h"
+// #include "ServerDescription.c"
 
 zend_class_entry* php_phongo_server_ce;
 
@@ -384,6 +385,17 @@ static PHP_METHOD(Server, getPort)
 	phongo_throw_exception(PHONGO_ERROR_RUNTIME, "Failed to get server description");
 } /* }}} */
 
+/* {{{ proto integer MongoDB\Driver\Server::getServerDescription()
+   Returns the server description for this Server */
+static PHP_METHOD(Server, getServerDescription)
+{
+	php_phongo_server_t* intern = Z_SERVER_OBJ_P(getThis());
+
+	PHONGO_PARSE_PARAMETERS_NONE();
+
+	phongo_serverdescription_init(return_value, mongoc_client_get_server_description(Z_MANAGER_OBJ_P(&intern->manager)->client, intern->server_id));
+} /* }}} */
+
 /* {{{ proto integer MongoDB\Driver\Server::getType()
    Returns the node type of this Server */
 static PHP_METHOD(Server, getType)
@@ -585,6 +597,7 @@ static zend_function_entry php_phongo_server_me[] = {
 	PHP_ME(Server, getInfo, ai_Server_void, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
 	PHP_ME(Server, getLatency, ai_Server_void, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
 	PHP_ME(Server, getPort, ai_Server_void, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+	PHP_ME(Server, getServerDescription, ai_Server_void, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
 	PHP_ME(Server, getType, ai_Server_void, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
 	PHP_ME(Server, isPrimary, ai_Server_void, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
 	PHP_ME(Server, isSecondary, ai_Server_void, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
